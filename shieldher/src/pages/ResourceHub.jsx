@@ -8,6 +8,58 @@ const ResourceHub = () => {
   const { t } = useLanguage();
   const navigate = useNavigate();
 
+  const handleDownload = () => {
+    const content = `SHIELDHER — OFFLINE SAFETY GUIDE
+=======================================
+Generated: ${new Date().toLocaleDateString()}
+
+EMERGENCY CONTACTS
+------------------
+• National Domestic Violence Hotline: 1-800-799-SAFE (7233)
+• Crisis Text Line: Text HOME to 741741
+• Women's Health Helpline: 1-800-994-9662
+• Emergency Services: 911 / 112
+
+SOS SAFETY PROTOCOL
+-------------------
+1. Press and hold the SOS button in ShieldHer for 3 seconds.
+2. Your location is automatically shared with your trusted contacts.
+3. A loud alarm triggers to attract attention.
+4. Local emergency services are notified if contacts are unreachable.
+
+5-4-3-2-1 GROUNDING TECHNIQUE (Anxiety/Panic)
+----------------------------------------------
+• 5 things you can SEE
+• 4 things you can TOUCH
+• 3 things you can HEAR
+• 2 things you can SMELL
+• 1 thing you can TASTE
+
+FIRST AID BASICS
+----------------
+• Burns: Cool with running water for 10 mins. Do not use ice.
+• Cuts: Apply firm pressure with clean cloth. Elevate if possible.
+• Choking: Perform the Heimlich maneuver or call 911 immediately.
+• Fainting: Lay person flat. Elevate legs. Loosen tight clothing.
+
+MENTAL HEALTH CRISIS
+--------------------
+• Vandrevala Foundation: 1860-2662-345 (24/7)
+• iCall: 9152987821
+• Stay with the person. Listen. Do not minimize their feelings.
+
+Stay safe. You are not alone. 💜
+— ShieldHer Team
+`;
+    const blob = new Blob([content], { type: 'text/plain' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'ShieldHer-Safety-Guide.txt';
+    a.click();
+    URL.revokeObjectURL(url);
+  };
+
   const helplines = [
     { id: 1, name: "National Domestic Violence Hotline", number: "1-800-799-SAFE", color: "bg-red-50 text-red-600", border: "border-red-100" },
     { id: 2, name: "Crisis Text Line", number: "Text HOME to 741741", color: "bg-purple-50 text-primary", border: "border-purple-100" },
@@ -82,8 +134,8 @@ const ResourceHub = () => {
                 Download critical safety protocols, first-aid tips, and essential contact numbers for when you don't have internet access.
               </p>
             </div>
-            <button className="min-h-[44px] w-full py-3 bg-white text-primary font-bold rounded-xl hover:bg-gray-50 transition-colors shadow-sm">
-              {t('btn.download')}
+            <button onClick={handleDownload} className="min-h-[44px] w-full py-3 bg-white text-primary font-bold rounded-xl hover:bg-gray-50 transition-colors shadow-sm flex items-center justify-center gap-2">
+              <Download className="w-5 h-5" /> {t('btn.download') || 'Download Guide'}
             </button>
           </div>
         </div>

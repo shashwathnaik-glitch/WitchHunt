@@ -4,6 +4,8 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { 
   Smile, Meh, Frown, Sparkles, Heart, Zap, Coffee, Cloud, AlertCircle, Phone, Play, X, CheckCircle2, ChevronRight
 } from 'lucide-react';
+import { loadData, saveData } from '../utils/storageUtils';
+import { useToast } from '../context/ToastContext';
 
 const EMOTIONS = [
   { id: 'happy', icon: <Smile className="w-8 h-8" />, label: 'Happy', color: 'text-green-500', bg: 'bg-green-50', border: 'border-green-200' },
@@ -27,15 +29,19 @@ const MEDITATIONS = [
   { id: 6, title: "Gratitude", duration: 5, color: "from-yellow-100 to-orange-50" }
 ];
 
-// Generate 30 days of mock heatmap data (0-4 intensity)
-const HEATMAP_DATA = Array.from({ length: 30 }, () => Math.floor(Math.random() * 5));
-
 const MindPulse = () => {
+  const { showToast } = useToast();
+
   // Mood State
   const [selectedMood, setSelectedMood] = useState(null);
   const [selectedTags, setSelectedTags] = useState([]);
   const [aiResponse, setAiResponse] = useState(null);
   const [isGenerating, setIsGenerating] = useState(false);
+  const [heatmapData, setHeatmapData] = useState([]);
+
+  useEffect(() => {
+    setHeatmapData(Array.from({ length: 30 }, () => Math.floor(Math.random() * 5)));
+  }, []);
 
   // Meditation State
   const [activeMeditation, setActiveMeditation] = useState(null);
@@ -76,6 +82,24 @@ const MindPulse = () => {
 
   const handleLogMood = () => {
     setIsGenerating(true);
+    
+    const newLog = {
+      id: Date.now(),
+      mood: selectedMood.label,
+      tags: selectedTags,
+      date: new Date().toISOString()
+    };
+    const existing = loadData('mood_logs', []);
+    saveData('mood_logs', [...existing, newLog]);
+
+    setHeatmapData(prev => {
+      const newData = [...prev];
+      newData[newData.length - 1] = Math.min(newData[newData.length - 1] + 1, 4);
+      return newData;
+    });
+
+    showToast('Mood logged successfully!', 'success');
+
     // Simulate AI response generation
     setTimeout(() => {
       let response = "I hear you. Taking time to acknowledge your feelings is a powerful step.";
@@ -100,7 +124,7 @@ const MindPulse = () => {
 
   return (
     <PageWrapper>
-      <div className="p-4 md:p-8 max-w-4xl mx-auto space-y-8 pb-32">
+      <div className="p-4 md:p-8 max-w-4xl lg:max-w-7xl mx-auto space-y-8 pb-32">
         
         <div className="text-center">
           <h1 className="text-2xl md:text-3xl font-bold text-gray-900">MindPulse</h1>
@@ -199,12 +223,12 @@ const MindPulse = () => {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <div className="bg-white rounded-3xl p-6 shadow-sm border border-gray-100 md:col-span-2">
             <h3 className="text-lg font-bold text-gray-800 mb-4">30-Day Mood History</h3>
-            <div className="flex flex-wrap gap-2">
-              {HEATMAP_DATA.map((intensity, i) => {
+            <div className="flex flex-wrap lg:flex-nowrap lg:overflow-x-auto pb-2 hide-scrollbar gap-2">
+              {heatmapData.map((intensity, i) => {
                 // Color mapping based on intensity
                 const colors = ['bg-gray-100', 'bg-purple-200', 'bg-purple-400', 'bg-purple-600', 'bg-purple-800'];
                 return (
-                  <div key={i} className={`w-6 h-6 rounded-md ${colors[intensity]}`} title={`Day ${i+1}`} />
+                  <div key={i} className={`flex-shrink-0 w-6 h-6 lg:w-8 lg:h-8 rounded-md ${colors[intensity]}`} title={`Day ${i+1}`} />
                 );
               })}
             </div>
@@ -287,7 +311,7 @@ const MindPulse = () => {
             </div>
 
             {/* Breathing Animation: Inhale (4s) -> Hold (4s) -> Exhale (6s) */}
-            <div className="relative w-64 h-64 mb-16 flex items-center justify-center">
+            <div className="relative w-48 h-48 md:w-64 md:h-64 lg:w-[300px] lg:h-[300px] mb-16 flex items-center justify-center">
               <div 
                 className="absolute inset-0 bg-white/10 rounded-full animate-breathe"
                 style={{ animationDuration: '14s' }}

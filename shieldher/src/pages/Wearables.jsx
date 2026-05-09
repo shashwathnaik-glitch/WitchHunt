@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import PageWrapper from '../components/layout/PageWrapper';
+import Modal from '../components/ui/Modal';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Watch, Heart, Smartphone, Activity, RefreshCw, X, CheckCircle2, ShieldAlert } from 'lucide-react';
 
@@ -195,49 +196,44 @@ const Wearables = () => {
       </div>
 
       {/* Connection Modal */}
-      <AnimatePresence>
-        {isModalOpen && selectedDeviceToConnect && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
-            <motion.div 
-              initial={{ scale: 0.95, opacity: 0, y: 20 }}
-              animate={{ scale: 1, opacity: 1, y: 0 }}
-              exit={{ scale: 0.95, opacity: 0, y: 20 }}
-              className="bg-white rounded-3xl w-full max-w-sm shadow-2xl overflow-hidden"
-            >
-              <div className="p-6 text-center space-y-4">
-                <div className={`w-20 h-20 mx-auto rounded-2xl flex items-center justify-center mb-4 ${selectedDeviceToConnect.color} shadow-lg`}>
-                  <Watch className="w-10 h-10" />
-                </div>
-                
-                <h3 className="font-bold text-xl text-gray-900">Connect {selectedDeviceToConnect.name}</h3>
-                <p className="text-sm text-gray-600 leading-relaxed">
-                  You are about to securely link ShieldHer with {selectedDeviceToConnect.provider}. This allows us to automatically sync your steps and heart rate.
-                </p>
+      <Modal 
+        isOpen={isModalOpen && !!selectedDeviceToConnect} 
+        onClose={() => setIsModalOpen(false)} 
+        title={selectedDeviceToConnect ? `Connect ${selectedDeviceToConnect.name}` : ''}
+      >
+        {selectedDeviceToConnect && (
+          <div className="space-y-5">
+            <div className="text-center">
+              <div className={`w-20 h-20 mx-auto rounded-2xl flex items-center justify-center mb-4 ${selectedDeviceToConnect.color} shadow-lg`}>
+                <Watch className="w-10 h-10" />
+              </div>
+              <p className="text-sm text-gray-300 leading-relaxed">
+                You are about to securely link ShieldHer with <strong className="text-white">{selectedDeviceToConnect.provider}</strong>. This allows automatic syncing of steps and heart rate.
+              </p>
+            </div>
 
-                <div className="bg-blue-50 text-blue-700 p-3 rounded-xl text-xs text-left flex gap-3 border border-blue-100">
-                  <ShieldAlert className="w-8 h-8 flex-shrink-0" />
-                  <p><strong>Demo Mode Notice:</strong> Clicking authorize will simulate a successful OAuth connection using mock data.</p>
-                </div>
-              </div>
-              
-              <div className="p-4 border-t border-gray-100 flex flex-col gap-2 bg-gray-50">
-                <button 
-                  onClick={handleMockAuthorize}
-                  className="w-full min-h-[44px] bg-emerald-500 text-white font-bold rounded-xl hover:bg-emerald-600 transition-colors flex items-center justify-center gap-2"
-                >
-                  <CheckCircle2 className="w-5 h-5" /> Mock Authorize
-                </button>
-                <button 
-                  onClick={() => setIsModalOpen(false)}
-                  className="w-full min-h-[44px] text-gray-500 font-medium hover:bg-gray-200 rounded-xl transition-colors"
-                >
-                  Cancel
-                </button>
-              </div>
-            </motion.div>
+            <div className="bg-blue-900/30 text-blue-300 p-3 rounded-xl text-xs flex gap-3 border border-blue-500/30">
+              <ShieldAlert className="w-8 h-8 flex-shrink-0 text-blue-400" />
+              <p><strong>Demo Mode Notice:</strong> Clicking authorize will simulate a successful OAuth connection using mock data.</p>
+            </div>
+
+            <div className="flex flex-col gap-2 pt-2">
+              <button 
+                onClick={handleMockAuthorize}
+                className="w-full min-h-[44px] bg-emerald-600 text-white font-bold rounded-xl hover:bg-emerald-700 transition-colors flex items-center justify-center gap-2"
+              >
+                <CheckCircle2 className="w-5 h-5" /> Mock Authorize
+              </button>
+              <button 
+                onClick={() => setIsModalOpen(false)}
+                className="w-full min-h-[44px] text-gray-400 font-medium hover:bg-white/10 rounded-xl transition-colors"
+              >
+                Cancel
+              </button>
+            </div>
           </div>
         )}
-      </AnimatePresence>
+      </Modal>
 
     </PageWrapper>
   );

@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import PageWrapper from '../components/layout/PageWrapper';
+import Modal from '../components/ui/Modal';
 import { Heart, MessageCircle, Share2, Plus, X, Users, TrendingUp, Filter } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -156,10 +157,34 @@ const Community = () => {
           </button>
         </div>
 
-        <div className="flex flex-col lg:flex-row gap-8">
+        <div className="flex flex-col lg:grid lg:grid-cols-12 gap-8">
           
-          {/* Main Feed */}
-          <div className="flex-1 space-y-6">
+          {/* LEFT SIDEBAR (Desktop Filters) */}
+          <div className="hidden lg:block lg:col-span-3 space-y-4">
+            <div className="bg-white rounded-3xl p-6 shadow-sm border border-gray-100 sticky top-8">
+              <h3 className="font-bold text-gray-900 mb-4 flex items-center gap-2">
+                <Filter className="w-5 h-5 text-gray-500" /> Categories
+              </h3>
+              <div className="space-y-2">
+                {CATEGORIES.map(category => (
+                  <button
+                    key={category.id}
+                    onClick={() => setActiveTab(category.id)}
+                    className={`w-full text-left px-4 py-3 rounded-xl text-sm font-medium transition-colors border ${
+                      activeTab === category.id 
+                        ? 'bg-purple-100 text-purple-900 border-purple-200' 
+                        : 'bg-transparent text-gray-600 border-transparent hover:bg-gray-50'
+                    }`}
+                  >
+                    {category.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          {/* CENTER: Main Feed */}
+          <div className="lg:col-span-6 space-y-6 max-w-[600px] mx-auto w-full">
             
             {/* Mobile Share Button */}
             <button 
@@ -169,8 +194,8 @@ const Community = () => {
               <Plus className="w-5 h-5" /> Share Your Story
             </button>
 
-            {/* Filter Tabs */}
-            <div className="flex overflow-x-auto pb-2 hide-scrollbar gap-2">
+            {/* Mobile Filter Tabs */}
+            <div className="flex lg:hidden overflow-x-auto pb-2 hide-scrollbar gap-2">
               {CATEGORIES.map(category => (
                 <button
                   key={category.id}
@@ -241,8 +266,8 @@ const Community = () => {
             )}
           </div>
 
-          {/* Sidebar */}
-          <div className="w-full lg:w-80 space-y-6">
+          {/* RIGHT SIDEBAR */}
+          <div className="lg:col-span-3 space-y-6">
             <div className="bg-gradient-to-br from-purple-50 to-pink-50 rounded-3xl p-6 border border-purple-100 shadow-sm">
               <h3 className="font-bold text-purple-900 flex items-center gap-2 mb-4">
                 <TrendingUp className="w-5 h-5 text-purple-500" /> Trending Topics
@@ -252,6 +277,35 @@ const Community = () => {
                   <span key={tag} className="px-3 py-1.5 bg-white/60 text-purple-800 text-sm font-medium rounded-lg border border-purple-100 hover:bg-white cursor-pointer transition-colors">
                     {tag}
                   </span>
+                ))}
+              </div>
+            </div>
+
+            {/* Suggested Connections (Desktop Only or hidden on very small) */}
+            <div className="hidden lg:block bg-white rounded-3xl p-6 border border-gray-100 shadow-sm">
+              <h3 className="font-bold text-gray-900 mb-4 flex items-center gap-2">
+                <Users className="w-5 h-5 text-gray-500" /> Suggested for You
+              </h3>
+              <div className="space-y-4">
+                {[
+                  { name: 'Priya K.', bio: 'Yoga & Mindfulness', color: 'bg-emerald-100 text-emerald-600' },
+                  { name: 'Dr. Sarah', bio: 'Women\'s Health', color: 'bg-blue-100 text-blue-600' },
+                  { name: 'Lena M.', bio: 'Runner & Mom', color: 'bg-rose-100 text-rose-600' }
+                ].map((user, idx) => (
+                  <div key={idx} className="flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      <div className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-xs ${user.color}`}>
+                        {user.name.charAt(0)}
+                      </div>
+                      <div>
+                        <p className="text-sm font-bold text-gray-900 leading-tight">{user.name}</p>
+                        <p className="text-xs text-gray-500">{user.bio}</p>
+                      </div>
+                    </div>
+                    <button className="text-xs font-bold text-primary hover:text-purple-800 transition-colors">
+                      Connect
+                    </button>
+                  </div>
                 ))}
               </div>
             </div>
@@ -270,80 +324,61 @@ const Community = () => {
       </div>
 
       {/* Share Story Modal */}
-      <AnimatePresence>
-        {isModalOpen && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
-            <motion.div 
-              initial={{ scale: 0.95, opacity: 0, y: 20 }}
-              animate={{ scale: 1, opacity: 1, y: 0 }}
-              exit={{ scale: 0.95, opacity: 0, y: 20 }}
-              className="bg-white rounded-3xl w-full max-w-lg shadow-2xl overflow-hidden flex flex-col max-h-[90vh]"
+      <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} title="Share Your Story">
+        <form onSubmit={handlePostSubmit} className="space-y-6">
+          <div>
+            <label className="block text-sm font-bold text-gray-300 mb-2">Category</label>
+            <select 
+              value={newPostCategory}
+              onChange={(e) => setNewPostCategory(e.target.value)}
+              className="w-full bg-black/30 border border-purple-500/30 text-white rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-purple-500 min-h-[44px]"
             >
-              <div className="p-4 border-b border-gray-100 flex justify-between items-center bg-gray-50 flex-shrink-0">
-                <h3 className="font-bold text-gray-900 text-lg">Share Your Story</h3>
-                <button onClick={() => setIsModalOpen(false)} className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-200 rounded-full transition-colors min-w-[44px] min-h-[44px] flex items-center justify-center">
-                  <X className="w-5 h-5" />
-                </button>
-              </div>
-              
-              <form onSubmit={handlePostSubmit} className="p-6 flex-1 overflow-y-auto space-y-6">
-                
-                <div>
-                  <label className="block text-sm font-bold text-gray-700 mb-2">Category</label>
-                  <select 
-                    value={newPostCategory}
-                    onChange={(e) => setNewPostCategory(e.target.value)}
-                    className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary min-h-[44px]"
-                  >
-                    {CATEGORIES.filter(c => c.id !== 'all').map(c => (
-                      <option key={c.id} value={c.id}>{c.label}</option>
-                    ))}
-                  </select>
-                </div>
-
-                <div>
-                  <div className="flex justify-between mb-2">
-                    <label className="block text-sm font-bold text-gray-700">Your Story</label>
-                    <span className={`text-xs font-medium ${newPostText.length > 280 ? 'text-red-500' : 'text-gray-400'}`}>
-                      {newPostText.length}/280
-                    </span>
-                  </div>
-                  <textarea 
-                    required
-                    value={newPostText}
-                    onChange={(e) => setNewPostText(e.target.value)}
-                    placeholder="What's on your mind? Share a win, a tip, or ask for support..."
-                    className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary h-32 resize-none"
-                  />
-                </div>
-
-                <div className="flex items-center gap-3 p-4 bg-purple-50 rounded-xl border border-purple-100">
-                  <input 
-                    type="checkbox" 
-                    id="anonymous"
-                    checked={isAnonymous}
-                    onChange={(e) => setIsAnonymous(e.target.checked)}
-                    className="w-5 h-5 text-primary rounded focus:ring-primary cursor-pointer"
-                  />
-                  <label htmlFor="anonymous" className="text-sm font-medium text-purple-900 cursor-pointer">
-                    Post Anonymously
-                  </label>
-                </div>
-
-                <div className="pt-2 border-t border-gray-100">
-                  <button 
-                    type="submit" 
-                    disabled={!newPostText.trim() || newPostText.length > 280}
-                    className="w-full min-h-[44px] bg-primary text-white font-bold rounded-xl hover:bg-purple-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed shadow-md"
-                  >
-                    Publish Post
-                  </button>
-                </div>
-              </form>
-            </motion.div>
+              {CATEGORIES.filter(c => c.id !== 'all').map(c => (
+                <option key={c.id} value={c.id} className="bg-[#160D30]">{c.label}</option>
+              ))}
+            </select>
           </div>
-        )}
-      </AnimatePresence>
+
+          <div>
+            <div className="flex justify-between mb-2">
+              <label className="block text-sm font-bold text-gray-300">Your Story</label>
+              <span className={`text-xs font-medium ${newPostText.length > 280 ? 'text-red-400' : 'text-gray-500'}`}>
+                {newPostText.length}/280
+              </span>
+            </div>
+            <textarea 
+              required
+              value={newPostText}
+              onChange={(e) => setNewPostText(e.target.value)}
+              placeholder="What's on your mind? Share a win, a tip, or ask for support..."
+              className="w-full bg-black/30 border border-purple-500/30 text-white rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-purple-500 h-32 resize-none placeholder:text-gray-500"
+            />
+          </div>
+
+          <div className="flex items-center gap-3 p-4 bg-purple-900/30 rounded-xl border border-purple-500/30">
+            <input 
+              type="checkbox" 
+              id="anonymous"
+              checked={isAnonymous}
+              onChange={(e) => setIsAnonymous(e.target.checked)}
+              className="w-5 h-5 text-primary rounded focus:ring-primary cursor-pointer"
+            />
+            <label htmlFor="anonymous" className="text-sm font-medium text-purple-300 cursor-pointer">
+              Post Anonymously
+            </label>
+          </div>
+
+          <div className="pt-2 border-t border-white/10">
+            <button 
+              type="submit" 
+              disabled={!newPostText.trim() || newPostText.length > 280}
+              className="w-full min-h-[44px] bg-purple-600 text-white font-bold rounded-xl hover:bg-purple-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed shadow-md"
+            >
+              Publish Post
+            </button>
+          </div>
+        </form>
+      </Modal>
 
     </PageWrapper>
   );

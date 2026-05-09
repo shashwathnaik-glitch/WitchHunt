@@ -21,7 +21,7 @@ const PageWrapper = ({ children }) => {
       exit="out"
       variants={pageVariants}
       transition={pageTransition}
-      className="w-full h-full"
+      className="w-full h-full overflow-x-hidden"
     >
       {children}
     </motion.div>

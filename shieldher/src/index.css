@@ -1,6 +1,18 @@
 @import "tailwindcss";
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+html, body, #root {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: hidden;
+  margin: 0;
+  padding: 0;
+}
+
 @theme {
   --color-primary: #7C3AED;
   --color-secondary: #EC4899;
@@ -131,4 +143,46 @@ button.bg-secondary, button.bg-pink-600, button.bg-rose-600 {
 nav, .fixed.bottom-0 {
   background-color: var(--bg-card) !important;
   border-top: 1px solid var(--border-subtle) !important;
+}
+
+/* =========================================
+   WEB IMPROVEMENTS 
+   ========================================= */
+
+@media (hover: hover) {
+  .bg-white:hover, .bg-gray-50:hover, .bg-gray-100:hover {
+    border-color: var(--border-glow) !important;
+    background-color: var(--bg-card-hover) !important;
+    cursor: pointer;
+  }
+  
+  nav a:hover, nav button:hover {
+    background-color: rgba(124,58,237,0.08) !important;
+  }
+  
+  button:hover, .btn:hover {
+    filter: brightness(110%);
+  }
+
+  .hover-lift:hover {
+    transform: translateY(-2px);
+  }
+}
+
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: #0A0618; }
+::-webkit-scrollbar-thumb { background: #3B2080; border-radius: 10px; }
+::-webkit-scrollbar-thumb:hover { background: #6D28D9; }
+
+*:focus-visible {
+  outline: 2px solid var(--accent-purple-light) !important;
+  outline-offset: 3px !important;
+}
+
+h1, .text-2xl, .text-3xl {
+  font-size: clamp(22px, 2.5vw, 28px) !important;
+}
+
+h2, h3, h4, .text-lg, .text-xl {
+  font-size: clamp(15px, 2vw, 18px) !important;
 }

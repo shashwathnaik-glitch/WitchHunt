@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import MainLayout from './components/layout/MainLayout';
 import Dashboard from './pages/Dashboard';
@@ -14,28 +14,37 @@ import Wearables from './pages/Wearables';
 import Community from './pages/Community';
 import { LanguageProvider } from './context/LanguageContext';
 import { ThemeProvider } from './context/ThemeContext';
+import { ToastProvider } from './context/ToastContext';
+import { initializeMockData } from './utils/storageUtils';
 
 function App() {
+  useEffect(() => {
+    initializeMockData();
+  }, []);
+
   return (
     <ThemeProvider>
       <LanguageProvider>
-        <Router>
-          <Routes>
-            <Route path="/" element={<MainLayout />}>
-              <Route index element={<Dashboard />} />
-              <Route path="safeguard" element={<SafeGuard />} />
-              <Route path="mindpulse" element={<MindPulse />} />
-              <Route path="health" element={<HealthCompanion />} />
-              <Route path="resources" element={<ResourceHub />} />
-              <Route path="activity" element={<ActivityHub />} />
-              <Route path="nutrition" element={<NutritionLog />} />
-              <Route path="sleep" element={<SleepTracker />} />
-              <Route path="settings" element={<Settings />} />
-              <Route path="wearables" element={<Wearables />} />
-              <Route path="community" element={<Community />} />
-            </Route>
-          </Routes>
-        </Router>
+        <ToastProvider>
+          <Router>
+            <Routes>
+              <Route path="/" element={<MainLayout />}>
+                <Route index element={<Dashboard />} />
+                <Route path="safety" element={<SafeGuard />} />
+                <Route path="mind" element={<MindPulse />} />
+                <Route path="health" element={<HealthCompanion />} />
+                <Route path="resources" element={<ResourceHub />} />
+                <Route path="activity" element={<ActivityHub />} />
+                <Route path="nutrition" element={<NutritionLog />} />
+                <Route path="sleep" element={<SleepTracker />} />
+                <Route path="settings" element={<Settings />} />
+                <Route path="wearables" element={<Wearables />} />
+                <Route path="community" element={<Community />} />
+                <Route path="insights" element={<Dashboard />} />
+              </Route>
+            </Routes>
+          </Router>
+        </ToastProvider>
       </LanguageProvider>
     </ThemeProvider>
   );

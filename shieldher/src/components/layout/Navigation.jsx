@@ -10,8 +10,8 @@ const Navigation = () => {
   const navItems = [
     { path: '/', name: 'Home', icon: Home },
     { path: '/activity', name: 'Activity', icon: Activity },
-    { path: '/safeguard', name: 'Safety', icon: ShieldAlert },
-    { path: '/mindpulse', name: 'Mind', icon: HeartPulse },
+    { path: '/safety', name: 'Safety', icon: ShieldAlert },
+    { path: '/mind', name: 'Mind', icon: HeartPulse },
     { path: '/community', name: 'Community', icon: Users },
   ];
 
