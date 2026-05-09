@@ -1,0 +1,134 @@
+@import "tailwindcss";
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+@theme {
+  --color-primary: #7C3AED;
+  --color-secondary: #EC4899;
+  --color-background: #0F0A1A;
+  --animate-pulse-fast: pulse 1.5s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+:root {
+  --bg-base: #0F0A1A;
+  --bg-card: #160D30;
+  --bg-card-hover: #1E1245;
+  --bg-elevated: #1A1035;
+  --accent-purple: #7C3AED;
+  --accent-purple-light: #A78BFA;
+  --accent-pink: #EC4899;
+  --accent-pink-light: #F9A8D4;
+  --accent-green: #34D399;
+  --accent-amber: #FBBF24;
+  --accent-red: #EF4444;
+  --text-primary: #FFFFFF;
+  --text-secondary: #C4B5FD;
+  --text-muted: #7C6FAA;
+  --border-subtle: rgba(109, 40, 217, 0.25);
+  --border-glow: rgba(167, 139, 250, 0.4);
+}
+
+@layer base {
+  body {
+    background-color: var(--bg-base) !important;
+    color: var(--text-primary) !important;
+    font-family: 'Inter', sans-serif !important;
+    -webkit-font-smoothing: antialiased;
+  }
+}
+
+@layer utilities {
+  .hide-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .hide-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+}
+
+/* =========================================
+   GLOBAL OVERRIDES FOR PREMIUM DARK THEME
+   ========================================= */
+
+/* 1. Remove all white/light backgrounds globally */
+.bg-white, 
+.bg-gray-50, 
+.bg-gray-100 {
+  background-color: var(--bg-card) !important;
+  border: 1px solid var(--border-subtle) !important;
+  border-radius: 16px !important;
+  box-shadow: none !important;
+  color: var(--text-primary) !important;
+}
+
+/* Specific surface overrides for translucent header bars */
+.bg-white\/80 {
+  background-color: rgba(22, 13, 48, 0.85) !important;
+  border: 1px solid var(--border-subtle) !important;
+  backdrop-filter: blur(12px) !important;
+}
+
+/* 2. Soften Colored Backgrounds (Subtle tinting instead of bright backgrounds) */
+.bg-purple-50, .bg-purple-100, .bg-indigo-50, .bg-indigo-100,
+.bg-red-50, .bg-red-100, .bg-blue-50, .bg-blue-100,
+.bg-green-50, .bg-green-100, .bg-orange-50, .bg-orange-100,
+.bg-pink-50, .bg-pink-100, .bg-yellow-50, .bg-yellow-100,
+.bg-emerald-50, .bg-emerald-100, .bg-teal-50, .bg-teal-100,
+.bg-rose-50, .bg-rose-100, .bg-cyan-50, .bg-cyan-100 {
+  background-color: var(--bg-elevated) !important;
+  border: 1px solid var(--border-subtle) !important;
+  box-shadow: none !important;
+}
+
+/* 3. Typography Overrides */
+/* Headings */
+h1, h2, h3, h4, h5, h6,
+.text-gray-900, .text-gray-800, .text-indigo-900 {
+  color: var(--text-primary) !important;
+  font-weight: 700 !important;
+}
+
+/* Subtext */
+p, span, .text-gray-500, .text-gray-600, .text-gray-400, .text-indigo-700 {
+  color: var(--text-muted) !important;
+}
+
+/* Accent Text */
+.text-primary, .text-purple-600, .text-indigo-600, .text-purple-700 { color: var(--accent-purple-light) !important; }
+.text-secondary, .text-pink-600, .text-rose-600 { color: var(--accent-pink-light) !important; }
+.text-green-500, .text-green-600, .text-green-700, .text-emerald-500, .text-emerald-600, .text-emerald-700 { color: var(--accent-green) !important; }
+.text-red-500, .text-red-600, .text-red-700 { color: var(--accent-red) !important; }
+.text-orange-500, .text-orange-600, .text-orange-700, .text-yellow-500, .text-yellow-600 { color: var(--accent-amber) !important; }
+.text-blue-500, .text-blue-600, .text-blue-700 { color: #60A5FA !important; }
+
+/* 4. Global Button Styling */
+button, .btn {
+  border-radius: 12px !important;
+  font-weight: 600 !important;
+  text-transform: none !important;
+}
+
+/* Specific overrides for buttons that had colored backgrounds to ensure they pop nicely in dark mode */
+button.bg-primary, button.bg-indigo-600, button.bg-purple-600 {
+  background-color: var(--accent-purple) !important;
+  color: #ffffff !important;
+  border: none !important;
+}
+
+button.bg-secondary, button.bg-pink-600, button.bg-rose-600 {
+  background-color: var(--accent-pink) !important;
+  color: #ffffff !important;
+  border: none !important;
+}
+
+/* Fix gradients for dark mode (e.g., banners) */
+.bg-gradient-to-r, .bg-gradient-to-br {
+  background: var(--bg-card) !important;
+  border: 1px solid var(--border-subtle) !important;
+}
+
+/* Fix navigation bar background */
+nav, .fixed.bottom-0 {
+  background-color: var(--bg-card) !important;
+  border-top: 1px solid var(--border-subtle) !important;
+}
